@@ -1,60 +1,30 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import Price from "./ui/Price";
-import Ratings from "./ui/Ratings";
-
-const Book = ({ book }) => {
-  const [img, setImg] = useState();
-
-  // When we switch routes dont set image to unmounted component
-  const mountedRef = useRef(true);
-
-  useEffect(() => {
-    const image = new Image();
-    image.src = book.url;
-    image.onload = () => {
-      setTimeout(() => {
-        if (mountedRef.current) {
-          setImg(image);
-        }
-      }, 300);
-    };
-    return () => {
-      // When the component unmounts 
-      mountedRef.current = false;
-    };
-  }, [book.url]);
-
+import React from "react";
+const Book = () => {
   return (
     <div className="book">
-      {!img ? (
-        <>
-          <div className="book__img--skeleton"></div>
-          <div className="skeleton book__title--skeleton"></div>
-          <div className="skeleton book__rating--skeleton"></div>
-          <div className="skeleton book__price--skeleton"></div>
-        </>
-      ) : (
-        <>
-          <Link to={`/books/${book.id}`}>
+        <a href="">
             <figure className="book__img--wrapper">
-              <img className="book__img" src={img.src} alt="" />
+                <img src="https://m.media-amazon.com/images/I/61mIq2iJUXL._AC_UF1000,1000_QL80_.jpg" alt="" className="book__img" />
             </figure>
-          </Link>
-          <div className="book__title">
-            <Link to={`/books/${book.id}`} className="book__title--link">
-              {book.title}
-            </Link>
-          </div>
-          <Ratings rating={book.rating} />
-          <Price
-            originalPrice={book.originalPrice}
-            salePrice={book.salePrice}
-          />
-        </>
-      )}
+        </a>
+        <div className="book_title">
+            <a href="" className="book__title--link">
+                Crack the Coding Interview
+            </a>
+        </div>
+        <div className="book_ratings">
+            <FontAwesomeIcon icon="star" />
+            <FontAwesomeIcon icon="star" />
+            <FontAwesomeIcon icon="star" />
+            <FontAwesomeIcon icon="star" />
+            <FontAwesomeIcon icon="star-half-alt" />
+        </div>
+        <div className="book__price">
+            <span className="book__price--normal">$49.95</span>
+            <span className="book__price--sale">$14.95</span>
+        </div>
     </div>
-  );
-};
+    );
+}
 
 export default Book;
