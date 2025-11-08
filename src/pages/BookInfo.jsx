@@ -1,14 +1,27 @@
-import React from "react";
+/* BookInfo.jsx */
+
 import { useParams } from "react-router";
-import Ratings from "../components/ui/Ratings";
-import Price from "../components/ui/Price";
+import Ratings from "../components/ui/Rating";
+import Price from "../components/ui/price";
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import BestBooks from "../components/ui/BestBooks";
+import Book from "../components/ui/Book";
 
-const BookInfo = ({ books, addItemToCart }) => {
+const BookInfo = ({ books, addItemToCart, Cart }) => {
   const { id } = useParams();
   const book = books.find((book) => +book.id === +id);
+  const [added, setAdded] = useState(false);
+  
+
+  function addBookToCart(book) {
+    addItemToCart(book);
+    setAdded(true);
+  }
+
+  function isBookInCart() {
+    return Cart.find((item) => item.id === +id);
+  }
 
   return (
     <div id="books__body">
@@ -53,9 +66,15 @@ const BookInfo = ({ books, addItemToCart }) => {
                     voluptas.
                   </p>
                 </div>
-                <button className="btn" onClick={() => addItemToCart(book)}>
-                  Add to Cart
-                </button>
+                {isBookInCart() ? (
+                  <Link to="/cart">
+                    <button className="btn">Checkout</button>
+                  </Link>
+                ) : (
+                    <button className="btn" onClick={() => addBookToCart(book)}>
+                      Add to Cart
+                    </button>
+                )}
               </div>
             </div>
           </div>
@@ -65,7 +84,12 @@ const BookInfo = ({ books, addItemToCart }) => {
             <div className="book__selected--top">
               <h2 className="book__selected--title--top">Recommended Books</h2>
             </div>
-            <BestBooks id={id} />
+            <div className="books">
+            {
+              books.filter(book => book.rating === 5 && +book.id !== +id).slice(0,4)
+              .map(book => <Book book={book} key={book.id} />)
+            }
+            </div>
           </div>
         </div>
       </main>

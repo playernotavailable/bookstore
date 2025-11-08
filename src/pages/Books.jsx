@@ -1,5 +1,7 @@
+/* Books.jsx */
+
 import React, { useState, useEffect } from "react";
-import Book from "../components/Book";
+import Book from "../components/ui/Book";
 
 const Books = ({ books: initalBooks }) => {
   const [books, setBooks] = useState();
@@ -61,9 +63,9 @@ const Books = ({ books: initalBooks }) => {
                 </select>
               </div>
               <div className="books">
-                {books && books.map((book) => {
-                  return <Book book={book} key={book.id} />;
-                })}
+                {books.map((book) => (
+                  <Book book={book} key={book.id} />
+                ))}
               </div>
             </div>
           </div>

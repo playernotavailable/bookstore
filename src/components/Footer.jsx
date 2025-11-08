@@ -1,3 +1,5 @@
+/* Footer.jsx */
+
 import React from "react";
 import { Link } from "react-router-dom";
 import Logo from "../assets/Library.svg"
@@ -24,7 +26,7 @@ const Footer = () => {
               Cart
             </Link>
           </div>
-          <div className="footer__copyright">Copyright &copy; 2021 Library</div>
+          <div className="footer__copyright">Copyright &copy; 2025 Library</div>
         </div>
       </div>
     </footer>

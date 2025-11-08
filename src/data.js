@@ -1,3 +1,5 @@
+/* data.js */
+
 // FAKE DATA
 export const books = [
   {
