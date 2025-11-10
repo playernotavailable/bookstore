@@ -1,57 +1,54 @@
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Rating from "./Rating";
+ import Rating from "./Rating";
 import Price from "./price";
-import {useState, useEffect, use, useRef} from "react";
 
 const Book = ({ book }) => {
-    const [img, setImg] = useState;
+  const [img, setImg] = useState();
+  const [loading, setLoading] = useState(true);
 
-    const mountedRef = useRef(true);
-    
-    useEffect(() => {
-        const image = new Image();
-        image.src = book.url;
-        image.onload = () => {
-            setTimeout(() => {
-                if (mountedRef.current) {
-                    setImg(image);
-                }
-            setImg(image);
-        }, 300);
-        };
-        return() => {
-            mountedRef.current = false;
-        }
-    });
-    
+  useEffect(() => {
+    setLoading(true);
+    const image = new Image();
+    image.src = book.url;
+    image.onload = () => {
+      setTimeout(() => {
+        setImg(image);
+        setLoading(false);
+      }, 300);
+    };
+  }, [book.url]);
+
   return (
     <div className="book">
-        {
-            img ? (
-            <>
-            <Link to={`/books/${book.id}`}>
-                <figure className="book__img--wrapper">
-                    <img src={Image.src} className="book__img" />
-                </figure>
-            </Link>
-            <div className="book_title">
-                <Link to={`/books/${book.id}`} className="book__title--link">
-                    {book.title}
-                </Link>
-            </div>
-            <Rating  rating={book.ratings}/>
-            <Price salePrice={book.salePrice} originalPrice={book.originalPrice}/>
+      {loading ? (
+        <>
+          <div className="book__img--skeleton"></div>
+          <div className="skeleton book__title--skeleton"></div>
+          <div className="skeleton book__rating--skeleton"></div>
+          <div className="skeleton book__price--skeleton"></div>
         </>
-  ) : ( <>  
-  <div className="book__img--skeleton"></div>
-     <div className="skeleton book__title--skeleton"></div>
-     <div className="skeleton book__rating--skeleton"></div>
-     <div className="skeleton book__price--skeleton"></div>
-  
-  </>)
-        }
+      ) : (
+        <>
+          <Link to={`/books/${book.id}`}>
+            <figure className="book__img--wrapper">
+              <img className="book__img" src={img.src} alt="" />
+            </figure>
+          </Link>
+          <div className="book__title">
+            <Link to={`/books/${book.id}`} className="book__title--link">
+              {book.title}
+            </Link>
+          </div>
+          <Rating rating={book.rating} />
+          <Price
+            originalPrice={book.originalPrice}
+            salePrice={book.salePrice}
+          />
+        </>
+      )}
     </div>
-    );
+  );
 };
 
 export default Book;

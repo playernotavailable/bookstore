@@ -15,41 +15,84 @@ function App() {
   const [cart, setCart] = useState([]);
 
   function addItemToCart(book) {
-    setCart([... cart, {...book, quantity: 1}]);
-  } 
+    const dupeItem = cart.find((item) => item.id === book.id);
+    
+    if (dupeItem) {
+      setCart(
+        cart.map((item) =>
+          item.id === book.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      );
+    } else {
+      setCart([...cart, { ...book, quantity: 1 }]);
+    }
+  }
 
   function changeQuantity(book, quantity) {
-    setCart(cart.map(item => {
-      return item.id === book.id ? {
-          ...item, quantity: +quantity,
-        } : item
-    }))
+    setCart(
+      cart.map((item) => {
+        return item.id === book.id
+          ? {
+              ...item,
+              quantity: +quantity,
+            }
+          : item;
+      })
+    );
   }
 
   function numberOfItems() {
     let counter = 0;
-    cart.forEach(item => {
-      counter =+ item.quantity 
-    })
+    cart.forEach((item) => {
+      counter += item.quantity;
+    });
     return counter;
+  }
+
+  function removeItem(item) {
+    setCart(cart.filter((book) => book.id !== item.id));
+  }
+
+  function calcPrices() {
+    let total = 0;
+    cart.forEach((item) => {
+      total += (item.salePrice || item.originalPrice) * item.quantity;
+    });
+    return {
+      subtotal: total * 0.9,
+      tax: total * 0.1,
+      total,
+    };
   }
 
   useEffect(() => {
     console.log(cart);
   }, [cart]);
 
-  function removeItem(item) {
-    setCart(cart.filter(book => book.id !== item.id))
-  }
-
   return (
     <div className="App">
-      <Nav numberOfItems={numberOfItems()}/>
+      <Nav numberOfItems={numberOfItems()} />
       <Routes>
-      <Route path="/"  element={<Home />}/>
-      <Route path="/books" element={<Books books={books}/>}/>
-      <Route path="/books/:id" element={<BookInfo books={books} addItemToCart={addItemToCart}/>}/>
-      <Route path="/cart" element={() => <Cart books={books} cart={cart} changeQuantity={changeQuantity} removeItem={removeItem}/> }/>
+        <Route path="/" element={<Home />} />
+        <Route path="/books" element={<Books books={books} />} />
+        <Route 
+          path="/books/:id" 
+          element={<BookInfo books={books} addItemToCart={addItemToCart} cart={cart} />} 
+        />
+       <Route 
+  path="/cart" 
+  element={
+    <Cart 
+      books={books} 
+      cart={cart} 
+      updateCart={changeQuantity} 
+      removeItem={removeItem} 
+      totals={calcPrices()}  // ✅ Calling function HERE in App.js
+    />
+  } 
+/>
       </Routes>
       <Footer />
     </div>

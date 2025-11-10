@@ -1,40 +1,42 @@
 /* Books.jsx */
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Book from "../components/ui/Book";
 
-const Books = ({ books: initalBooks }) => {
-  const [books, setBooks] = useState();
+const Books = ({ books: initialBooks }) => {
+  const [books, setBooks] = useState([]);
 
   useEffect(() => {
-    setBooks(initalBooks);
-  }, [initalBooks]);
+    setBooks(initialBooks);
+  }, [initialBooks]);
 
   function filterBooks(filter) {
+    if (!books) return;
+
     switch (filter) {
       case "LOW_TO_HIGH":
-        return setBooks(
-          books
-            .slice()
-            .sort(
-              (a, b) =>
-                (a.salePrice || a.originalPrice) -
-                (b.salePrice || b.originalPrice)
-            )
+        setBooks(
+          [...books].sort(
+            (a, b) =>
+              (a.salePrice || a.originalPrice) -
+              (b.salePrice || b.originalPrice)
+          )
         );
+        break;
       case "HIGH_TO_LOW":
-        return setBooks(
-          books
-            .slice()
-            .sort(
-              (a, b) =>
-                (b.salePrice || b.originalPrice) -
-                (a.salePrice || a.originalPrice)
-            )
+        setBooks(
+          [...books].sort(
+            (a, b) =>
+              (b.salePrice || b.originalPrice) -
+              (a.salePrice || a.originalPrice)
+          )
         );
+        break;
       case "RATING":
-        return setBooks(books.slice().sort((a, b) => b.rating - a.rating));
+        setBooks([...books].sort((a, b) => b.rating - a.rating));
+        break;
       default:
+        setBooks(initialBooks);
         break;
     }
   }
@@ -52,7 +54,7 @@ const Books = ({ books: initalBooks }) => {
                 <select
                   id="filter"
                   onChange={(event) => filterBooks(event.target.value)}
-                  defaultValue={"DEFAULT"}
+                  defaultValue="DEFAULT"
                 >
                   <option value="DEFAULT" disabled>
                     Sort
@@ -63,9 +65,11 @@ const Books = ({ books: initalBooks }) => {
                 </select>
               </div>
               <div className="books">
-                {books.map((book) => (
-                  <Book book={book} key={book.id} />
-                ))}
+                {books && books.length > 0 ? (
+                  books.map((book) => <Book book={book} key={book.id} />)
+                ) : (
+                  <p>Loading books...</p>
+                )}
               </div>
             </div>
           </div>
